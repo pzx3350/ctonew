@@ -21,3 +21,12 @@ yarn-error.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Node
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Runtime output
+downloads/
