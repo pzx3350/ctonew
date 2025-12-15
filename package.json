@@ -1,0 +1,27 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "一个精美的互动生日贺卡网页应用，包含星空动画、烟花特效和音乐播放功能。",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pzx3350/ctonew.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/pzx3350/ctonew/issues"
+  },
+  "homepage": "https://github.com/pzx3350/ctonew#readme",
+  "dependencies": {
+    "fs-extra": "^11.3.2",
+    "tmp": "^0.2.5",
+    "uuid": "^13.0.0",
+    "yt-dlp-exec": "^1.0.2"
+  }
+}
