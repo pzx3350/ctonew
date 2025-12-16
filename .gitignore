@@ -18,7 +18,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Temporary files
+# Node
+node_modules/
+
 *.tmp
 *.temp
 
