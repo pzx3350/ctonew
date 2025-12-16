@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube 下载器 - API 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .button-secondary {
+            background: #6c757d;
+        }
+
+        .button-secondary:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 6px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .response.error {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .response.success {
+            border-left-color: #28a745;
+            background: #f0fff4;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.loading {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .file-actions button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 YouTube 下载器 API 测试</h1>
+            <p>交互式 API 测试页面 - 测试所有 YouTube 下载功能</p>
+        </div>
+
+        <!-- 健康检查 -->
+        <div class="section">
+            <h2>🏥 健康检查</h2>
+            <div class="form-group">
+                <button onclick="testHealthCheck()">测试 API 连接</button>
+            </div>
+            <div id="healthResponse" class="response"></div>
+        </div>
+
+        <!-- 获取视频信息 -->
+        <div class="section">
+            <h2>📺 获取视频信息</h2>
+            <div class="form-group">
+                <label for="videoUrl">YouTube 视频 URL</label>
+                <input 
+                    type="url" 
+                    id="videoUrl" 
+                    placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                >
+            </div>
+            <div class="form-group">
+                <button onclick="fetchVideoInfo()">获取信息</button>
+            </div>
+            <div id="videoInfoResponse" class="response"></div>
+        </div>
+
+        <!-- 下载视频 -->
+        <div class="section">
+            <h2>📹 下载视频</h2>
+            <div class="form-group">
+                <label for="downloadVideoUrl">YouTube 视频 URL</label>
+                <input 
+                    type="url" 
+                    id="downloadVideoUrl" 
+                    placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                >
+            </div>
+            <div class="form-group">
+                <label for="videoFormat">格式选项</label>
+                <select id="videoFormat">
+                    <option value="best">最高质量 (best)</option>
+                    <option value="bestvideo">最好视频</option>
+                    <option value="bestaudio">最好音频</option>
+                    <option value="worst">最低质量</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="videoFilename">文件名 (可选)</label>
+                <input 
+                    type="text" 
+                    id="videoFilename" 
+                    placeholder="%(title)s.%(ext)s"
+                >
+            </div>
+            <div class="form-group">
+                <button onclick="downloadVideo()">开始下载</button>
+            </div>
+            <div id="downloadVideoResponse" class="response"></div>
+        </div>
+
+        <!-- 下载音频 -->
+        <div class="section">
+            <h2>🎵 下载音频</h2>
+            <div class="form-group">
+                <label for="downloadAudioUrl">YouTube 视频 URL</label>
+                <input 
+                    type="url" 
+                    id="downloadAudioUrl" 
+                    placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                >
+            </div>
+            <div class="form-group">
+                <label for="audioFormat">音频格式</label>
+                <select id="audioFormat">
+                    <option value="mp3">MP3</option>
+                    <option value="wav">WAV</option>
+                    <option value="m4a">M4A</option>
+                    <option value="opus">OPUS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="audioFilename">文件名 (可选)</label>
+                <input 
+                    type="text" 
+                    id="audioFilename" 
+                    placeholder="%(title)s.%(ext)s"
+                >
+            </div>
+            <div class="form-group">
+                <button onclick="downloadAudio()">开始下载</button>
+            </div>
+            <div id="downloadAudioResponse" class="response"></div>
+        </div>
+
+        <!-- 文件管理 -->
+        <div class="section">
+            <h2>📂 已下载文件</h2>
+            <div class="form-group">
+                <button onclick="listDownloads()">刷新列表</button>
+            </div>
+            <div id="downloadsResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testHealthCheck() {
+            const responseDiv = document.getElementById('healthResponse');
+            responseDiv.innerHTML = '<div class="loading"></div> 测试中...';
+            
+            try {
+                const response = await fetch('/api/test');
+                const data = await response.json();
+                
+                const statusClass = response.ok ? 'success' : 'error';
+                const statusText = response.ok ? '✓ 成功' : '✗ 失败';
+                
+                responseDiv.innerHTML = `
+                    <div class="status ${statusClass}">${statusText}</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                responseDiv.className = `response ${statusClass}`;
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">✗ 错误</div>
+                    <pre>${error.message}</pre>
+                `;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function fetchVideoInfo() {
+            const url = document.getElementById('videoUrl').value;
+            const responseDiv = document.getElementById('videoInfoResponse');
+            
+            if (!url) {
+                responseDiv.innerHTML = '<div class="status error">✗ 请输入 URL</div>';
+                responseDiv.className = 'response error';
+                return;
+            }
+            
+            responseDiv.innerHTML = '<div class="loading"></div> 获取中...';
+            
+            try {
+                const response = await fetch(`/api/video/info?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+                
+                const statusClass = response.ok && data.success ? 'success' : 'error';
+                const statusText = response.ok && data.success ? '✓ 成功' : '✗ 失败';
+                
+                responseDiv.innerHTML = `
+                    <div class="status ${statusClass}">${statusText}</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                responseDiv.className = `response ${statusClass}`;
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">✗ 错误</div>
+                    <pre>${error.message}</pre>
+                `;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function downloadVideo() {
+            const url = document.getElementById('downloadVideoUrl').value;
+            const format = document.getElementById('videoFormat').value;
+            const filename = document.getElementById('videoFilename').value;
+            const responseDiv = document.getElementById('downloadVideoResponse');
+            
+            if (!url) {
+                responseDiv.innerHTML = '<div class="status error">✗ 请输入 URL</div>';
+                responseDiv.className = 'response error';
+                return;
+            }
+            
+            responseDiv.innerHTML = '<div class="loading"></div> 下载中... 这可能需要一些时间';
+            
+            try {
+                const response = await fetch('/api/video/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url,
+                        format: format || undefined,
+                        filename: filename || undefined
+                    })
+                });
+                
+                const data = await response.json();
+                
+                const statusClass = response.ok && data.success ? 'success' : 'error';
+                const statusText = response.ok && data.success ? '✓ 成功' : '✗ 失败';
+                
+                responseDiv.innerHTML = `
+                    <div class="status ${statusClass}">${statusText}</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                responseDiv.className = `response ${statusClass}`;
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">✗ 错误</div>
+                    <pre>${error.message}</pre>
+                `;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function downloadAudio() {
+            const url = document.getElementById('downloadAudioUrl').value;
+            const audioFormat = document.getElementById('audioFormat').value;
+            const filename = document.getElementById('audioFilename').value;
+            const responseDiv = document.getElementById('downloadAudioResponse');
+            
+            if (!url) {
+                responseDiv.innerHTML = '<div class="status error">✗ 请输入 URL</div>';
+                responseDiv.className = 'response error';
+                return;
+            }
+            
+            responseDiv.innerHTML = '<div class="loading"></div> 下载中... 这可能需要一些时间';
+            
+            try {
+                const response = await fetch('/api/audio/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url,
+                        audioFormat: audioFormat || undefined,
+                        filename: filename || undefined
+                    })
+                });
+                
+                const data = await response.json();
+                
+                const statusClass = response.ok && data.success ? 'success' : 'error';
+                const statusText = response.ok && data.success ? '✓ 成功' : '✗ 失败';
+                
+                responseDiv.innerHTML = `
+                    <div class="status ${statusClass}">${statusText}</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+                responseDiv.className = `response ${statusClass}`;
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">✗ 错误</div>
+                    <pre>${error.message}</pre>
+                `;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function listDownloads() {
+            const responseDiv = document.getElementById('downloadsResponse');
+            responseDiv.innerHTML = '<div class="loading"></div> 加载中...';
+            
+            try {
+                const response = await fetch('/api/downloads');
+                const data = await response.json();
+                
+                if (!response.ok || !data.success) {
+                    responseDiv.innerHTML = `
+                        <div class="status error">✗ 失败</div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                    responseDiv.className = 'response error';
+                    return;
+                }
+                
+                if (!data.data || data.data.length === 0) {
+                    responseDiv.innerHTML = `
+                        <div class="status success">✓ 成功</div>
+                        <p>暂无下载的文件</p>
+                    `;
+                    responseDiv.className = 'response success';
+                    return;
+                }
+                
+                let html = '<div class="status success">✓ 成功</div><div class="file-list">';
+                
+                data.data.forEach(file => {
+                    const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+                    html += `
+                        <div class="file-item">
+                            <div class="file-info">
+                                <div class="file-name">${escapeHtml(file.name)}</div>
+                                <div class="file-size">${sizeInMB} MB</div>
+                            </div>
+                            <div class="file-actions">
+                                <button onclick="downloadFile('${escapeHtml(file.url)}')">下载</button>
+                                <button class="button-secondary" onclick="deleteFile('${escapeHtml(file.name)}')">删除</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                responseDiv.innerHTML = html;
+                responseDiv.className = 'response success';
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="status error">✗ 错误</div>
+                    <pre>${error.message}</pre>
+                `;
+                responseDiv.className = 'response error';
+            }
+        }
+
+        async function deleteFile(filename) {
+            if (!confirm(`确定要删除 ${filename} 吗？`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/downloads/${encodeURIComponent(filename)}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert('文件已删除');
+                    listDownloads();
+                } else {
+                    alert('删除失败: ' + (data.error || '未知错误'));
+                }
+            } catch (error) {
+                alert('删除失败: ' + error.message);
+            }
+        }
+
+        function downloadFile(url) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 初始化 - 测试连接
+        window.addEventListener('load', () => {
+            testHealthCheck();
+        });
+    </script>
+</body>
+</html>

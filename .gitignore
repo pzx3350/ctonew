@@ -21,3 +21,23 @@ yarn-error.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Node.js
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Downloaded files
+downloads/
+*.mp4
+*.mkv
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.opus
