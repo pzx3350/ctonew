@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Download API Test Client</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="url"], input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input[type="url"]:focus, input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .button-danger {
+            background-color: #f44336;
+        }
+        .button-danger:hover {
+            background-color: #da190b;
+        }
+        .response {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #27ae60;
+        }
+        .error {
+            color: #e74c3c;
+        }
+        .loading {
+            color: #3498db;
+        }
+        .progress-container {
+            margin-top: 15px;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            font-size: 12px;
+        }
+        .video-info {
+            display: none;
+            margin-top: 15px;
+        }
+        .video-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .format-list {
+            margin-top: 15px;
+        }
+        .format-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .format-item input[type="radio"] {
+            margin-right: 10px;
+        }
+        .endpoint-section {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .endpoint-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .method-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+            color: white;
+        }
+        .get { background-color: #3498db; }
+        .post { background-color: #2ecc71; }
+        .delete { background-color: #e74c3c; }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎥 YouTube Download API Test Client</h1>
+
+    <!-- Video Info Section -->
+    <div class="container endpoint-section">
+        <div class="endpoint-title">
+            <span class="method-badge get">GET</span>
+            Get Video Information
+        </div>
+        <div class="form-group">
+            <label for="info-url">YouTube URL:</label>
+            <input type="url" id="info-url" placeholder="https://www.youtube.com/watch?v=..." 
+                   value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+        </div>
+        <button onclick="getVideoInfo()">Get Video Info</button>
+        <div class="video-info" id="video-info">
+            <h3>Video Details</h3>
+            <div class="video-details">
+                <div><strong>Title:</strong> <span id="video-title"></span></div>
+                <div><strong>Author:</strong> <span id="video-author"></span></div>
+                <div><strong>Duration:</strong> <span id="video-duration"></span></div>
+                <div><strong>Views:</strong> <span id="video-views"></span></div>
+            </div>
+            <div class="format-list">
+                <h4>Available Formats:</h4>
+                <div id="format-list"></div>
+            </div>
+        </div>
+        <div class="response" id="info-response"></div>
+    </div>
+
+    <!-- Video Download Section -->
+    <div class="container endpoint-section">
+        <div class="endpoint-title">
+            <span class="method-badge post">POST</span>
+            Download Video
+        </div>
+        <div class="form-group">
+            <label for="video-url">YouTube URL:</label>
+            <input type="url" id="video-url" placeholder="https://www.youtube.com/watch?v=..." 
+                   value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+        </div>
+        <div class="form-group">
+            <label for="video-format">Format ID:</label>
+            <input type="text" id="video-format" placeholder="e.g., 18, 22, 36">
+        </div>
+        <button onclick="downloadVideo()">Download Video</button>
+        <button onclick="cancelDownload()" class="button-danger" id="cancel-btn" style="display: none;">Cancel</button>
+        <div class="progress-container" id="video-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="video-progress-fill">0%</div>
+            </div>
+            <div id="video-progress-text"></div>
+        </div>
+        <div class="response" id="video-response"></div>
+    </div>
+
+    <!-- Audio Download Section -->
+    <div class="container endpoint-section">
+        <div class="endpoint-title">
+            <span class="method-badge post">POST</span>
+            Download Audio
+        </div>
+        <div class="form-group">
+            <label for="audio-url">YouTube URL:</label>
+            <input type="url" id="audio-url" placeholder="https://www.youtube.com/watch?v=..." 
+                   value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+        </div>
+        <div class="form-group">
+            <label for="audio-format">Format ID:</label>
+            <input type="text" id="audio-format" placeholder="e.g., 140, 171, 251" value="140">
+        </div>
+        <button onclick="downloadAudio()">Download Audio</button>
+        <button onclick="cancelDownload()" class="button-danger" id="cancel-btn-audio" style="display: none;">Cancel</button>
+        <div class="progress-container" id="audio-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="audio-progress-fill">0%</div>
+            </div>
+            <div id="audio-progress-text"></div>
+        </div>
+        <div class="response" id="audio-response"></div>
+    </div>
+
+    <!-- Cancel Section -->
+    <div class="container">
+        <h3>Cancel Download</h3>
+        <div class="form-group">
+            <label for="cancel-id">Download ID:</label>
+            <input type="text" id="cancel-id" placeholder="Enter download ID to cancel">
+        </div>
+        <button onclick="cancelDownloadById()" class="button-danger">Cancel Download</button>
+        <div class="response" id="cancel-response"></div>
+    </div>
+
+    <script>
+        let currentDownloadId = null;
+        let eventSource = null;
+
+        function showResponse(elementId, content, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = content;
+            element.className = 'response ' + (isError ? 'error' : 'success');
+        }
+
+        function clearProgress() {
+            document.getElementById('video-progress').style.display = 'none';
+            document.getElementById('audio-progress').style.display = 'none';
+            document.getElementById('cancel-btn').style.display = 'none';
+            document.getElementById('cancel-btn-audio').style.display = 'none';
+        }
+
+        function getVideoInfo() {
+            const url = document.getElementById('info-url').value;
+            const responseElement = document.getElementById('info-response');
+            
+            responseElement.textContent = 'Loading...';
+            responseElement.className = 'response loading';
+            
+            fetch(`/api/info?url=${encodeURIComponent(url)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const video = data.data;
+                        
+                        // Display video details
+                        document.getElementById('video-title').textContent = video.title;
+                        document.getElementById('video-author').textContent = video.author;
+                        document.getElementById('video-duration').textContent = formatDuration(video.length);
+                        document.getElementById('video-views').textContent = formatViews(video.viewCount);
+                        
+                        // Display formats
+                        const formatList = document.getElementById('format-list');
+                        formatList.innerHTML = '';
+                        video.formats.forEach(format => {
+                            const formatDiv = document.createElement('div');
+                            formatDiv.className = 'format-item';
+                            formatDiv.innerHTML = `
+                                <input type="radio" name="format" value="${format.itag}" id="format-${format.itag}">
+                                <label for="format-${format.itag}">
+                                    <strong>${format.qualityLabel || format.quality}</strong> 
+                                    (${format.container}) - ${format.mimeType ? format.mimeType.split(';')[0] : 'Unknown'}
+                                    ${format.audioBitrate ? ` - Audio: ${format.audioBitrate}kbps` : ''}
+                                </label>
+                            `;
+                            formatList.appendChild(formatDiv);
+                        });
+                        
+                        // Auto-fill format inputs
+                        document.getElementById('video-format').value = video.formats[0].itag;
+                        document.getElementById('audio-format').value = video.formats.find(f => f.audioBitrate)?.itag || '140';
+                        
+                        document.getElementById('video-info').style.display = 'block';
+                        
+                        showResponse('info-response', JSON.stringify(data, null, 2));
+                    } else {
+                        showResponse('info-response', `Error: ${data.error}`, true);
+                        document.getElementById('video-info').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    showResponse('info-response', `Network error: ${error.message}`, true);
+                    document.getElementById('video-info').style.display = 'none';
+                });
+        }
+
+        function startProgressTracking(downloadId, type) {
+            if (eventSource) {
+                eventSource.close();
+            }
+            
+            const progressContainer = document.getElementById(`${type}-progress`);
+            const progressFill = document.getElementById(`${type}-progress-fill`);
+            const progressText = document.getElementById(`${type}-progress-text`);
+            const cancelBtn = document.getElementById(`cancel-btn${type === 'audio' ? '-audio' : ''}`);
+            
+            progressContainer.style.display = 'block';
+            cancelBtn.style.display = 'inline-block';
+            
+            eventSource = new EventSource(`/api/progress/${downloadId}`);
+            
+            eventSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                if (data.progress !== undefined) {
+                    progressFill.style.width = `${data.progress}%`;
+                    progressFill.textContent = `${data.progress}%`;
+                    
+                    let text = `Status: ${data.status}`;
+                    if (data.title) text += ` - ${data.title}`;
+                    if (data.downloaded && data.total) {
+                        const downloadedMB = (data.downloaded / (1024 * 1024)).toFixed(1);
+                        const totalMB = (data.total / (1024 * 1024)).toFixed(1);
+                        text += ` - ${downloadedMB}MB / ${totalMB}MB`;
+                    }
+                    if (data.speed) {
+                        const speedMB = (data.speed / (1024 * 1024)).toFixed(1);
+                        text += ` - ${speedMB}MB/s`;
+                    }
+                    
+                    progressText.textContent = text;
+                }
+                
+                if (data.status === 'completed' || data.status === 'cancelled' || data.status === 'error') {
+                    eventSource.close();
+                    cancelBtn.style.display = 'none';
+                    if (data.status === 'error') {
+                        progressText.textContent += ` - Error: ${data.error}`;
+                    }
+                }
+            };
+            
+            eventSource.onerror = function() {
+                eventSource.close();
+                cancelBtn.style.display = 'none';
+                progressContainer.style.display = 'none';
+            };
+        }
+
+        function downloadVideo() {
+            const url = document.getElementById('video-url').value;
+            const format = document.getElementById('video-format').value;
+            const responseElement = document.getElementById('video-response');
+            
+            clearProgress();
+            responseElement.textContent = 'Starting download...';
+            responseElement.className = 'response loading';
+            
+            fetch('/api/download/video', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    url: url,
+                    formatId: format
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error || 'Download failed');
+                    });
+                }
+                
+                // Extract download ID from response headers or create one
+                const downloadId = response.headers.get('X-Download-ID') || Math.random().toString(36).substr(2, 9);
+                currentDownloadId = downloadId;
+                
+                responseElement.textContent = 'Download started. File will download automatically.';
+                responseElement.className = 'response success';
+                
+                startProgressTracking(downloadId, 'video');
+                
+                // Convert response to blob and trigger download
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `video_${currentDownloadId}.mp4`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                showResponse('video-response', `Error: ${error.message}`, true);
+                clearProgress();
+            });
+        }
+
+        function downloadAudio() {
+            const url = document.getElementById('audio-url').value;
+            const format = document.getElementById('audio-format').value;
+            const responseElement = document.getElementById('audio-response');
+            
+            clearProgress();
+            responseElement.textContent = 'Starting download...';
+            responseElement.className = 'response loading';
+            
+            fetch('/api/download/audio', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    url: url,
+                    formatId: format
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error || 'Download failed');
+                    });
+                }
+                
+                // Extract download ID from response headers or create one
+                const downloadId = response.headers.get('X-Download-ID') || Math.random().toString(36).substr(2, 9);
+                currentDownloadId = downloadId;
+                
+                responseElement.textContent = 'Download started. File will download automatically.';
+                responseElement.className = 'response success';
+                
+                startProgressTracking(downloadId, 'audio');
+                
+                // Convert response to blob and trigger download
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `audio_${currentDownloadId}.mp3`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                showResponse('audio-response', `Error: ${error.message}`, true);
+                clearProgress();
+            });
+        }
+
+        function cancelDownload() {
+            if (currentDownloadId && eventSource) {
+                fetch(`/api/cancel/${currentDownloadId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (eventSource) eventSource.close();
+                    clearProgress();
+                    showResponse('video-response', 'Download cancelled successfully');
+                    showResponse('audio-response', 'Download cancelled successfully');
+                })
+                .catch(error => {
+                    console.error('Cancel error:', error);
+                });
+            }
+        }
+
+        function cancelDownloadById() {
+            const id = document.getElementById('cancel-id').value;
+            if (!id) {
+                showResponse('cancel-response', 'Please enter a download ID', true);
+                return;
+            }
+            
+            fetch(`/api/cancel/${id}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                showResponse('cancel-response', JSON.stringify(data, null, 2));
+            })
+            .catch(error => {
+                showResponse('cancel-response', `Error: ${error.message}`, true);
+            });
+        }
+
+        function formatDuration(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            } else {
+                return `${minutes}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function formatViews(views) {
+            return new Intl.NumberFormat().format(views);
+        }
+
+        // Load video info on page load
+        window.addEventListener('load', () => {
+            getVideoInfo();
+        });
+    </script>
+</body>
+</html>
