@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube 视频下载器</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <h1 class="title">YouTube 视频下载器</h1>
+        <p class="subtitle">粘贴链接，获取视频信息并下载视频/音频。</p>
+      </header>
+
+      <main class="panel">
+        <form id="urlForm" class="form" autocomplete="off">
+          <label class="label" for="urlInput">YouTube URL</label>
+          <div class="row">
+            <input
+              id="urlInput"
+              class="input"
+              type="url"
+              required
+              placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx"
+            />
+            <button id="infoBtn" class="btn" type="submit">获取视频信息</button>
+          </div>
+          <p class="hint">提示：仅支持公开可访问的视频链接。</p>
+        </form>
+
+        <section id="errorSection" class="section hidden" aria-live="polite">
+          <div id="errorText" class="error"></div>
+        </section>
+
+        <section id="infoSection" class="section hidden" aria-live="polite">
+          <div class="section-header">
+            <h2 class="section-title">视频信息</h2>
+            <button id="refreshBtn" class="btn btn-ghost" type="button">刷新</button>
+          </div>
+
+          <div class="info">
+            <div class="info-item">
+              <div class="info-key">标题</div>
+              <div id="videoTitle" class="info-value"></div>
+            </div>
+            <div class="info-item">
+              <div class="info-key">时长</div>
+              <div id="videoDuration" class="info-value"></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="download">
+            <div class="toggle">
+              <label class="radio">
+                <input type="radio" name="downloadType" value="video" checked />
+                <span>视频</span>
+              </label>
+              <label class="radio">
+                <input type="radio" name="downloadType" value="audio" />
+                <span>音频</span>
+              </label>
+            </div>
+
+            <label class="label" for="formatSelect">可用格式</label>
+            <select id="formatSelect" class="select"></select>
+
+            <button id="downloadBtn" class="btn btn-primary" type="button">开始下载</button>
+          </div>
+        </section>
+
+        <section id="statusSection" class="section hidden" aria-live="polite">
+          <h2 class="section-title">下载状态</h2>
+
+          <div class="status">
+            <div id="statusText" class="status-text">准备中…</div>
+            <div id="progressText" class="status-meta">0%</div>
+          </div>
+
+          <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+            <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+          </div>
+
+          <div class="actions">
+            <button id="cancelBtn" class="btn btn-secondary" type="button">取消</button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>本工具仅供学习与个人用途，请遵守当地法律法规与平台条款。</span>
+      </footer>
+    </div>
+  </body>
+</html>
