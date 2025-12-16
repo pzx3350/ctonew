@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube 下载器 API 测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #e0e0e0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .response pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 12px;
+            color: #333;
+            font-family: "Monaco", "Courier New", monospace;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .status-message {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .status-message.info {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-message.success {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .status-message.error {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .video-info {
+            display: grid;
+            gap: 10px;
+        }
+
+        .video-info .item {
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+
+        .video-info .item strong {
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .formats-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .format-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .format-item:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 YouTube 下载器 API 测试</h1>
+        <p class="subtitle">测试 yt-dlp Express API 的各个功能端点</p>
+
+        <div class="section">
+            <h2>1️⃣ 获取视频信息</h2>
+            <div class="input-group">
+                <label for="infoUrl">视频 URL:</label>
+                <input type="url" id="infoUrl" placeholder="https://www.youtube.com/watch?v=..." 
+                       value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+            </div>
+            <button onclick="getVideoInfo()">获取信息</button>
+            <div id="infoResponse" class="response" style="display: none;">
+                <pre id="infoData"></pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2️⃣ 下载视频</h2>
+            <div class="input-group">
+                <label for="videoUrl">视频 URL:</label>
+                <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." 
+                       value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+            </div>
+            <div class="input-group">
+                <label for="formatId">格式 ID (可选，留空则自动选择最佳质量):</label>
+                <input type="text" id="formatId" placeholder="例如: 137+140">
+            </div>
+            <button onclick="downloadVideo()" id="videoDownloadBtn">开始下载视频</button>
+            <div id="videoProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="videoProgressFill">0%</div>
+                </div>
+                <div class="status-message info" id="videoStatus">准备中...</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3️⃣ 下载音频</h2>
+            <div class="input-group">
+                <label for="audioUrl">视频 URL:</label>
+                <input type="url" id="audioUrl" placeholder="https://www.youtube.com/watch?v=..." 
+                       value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+            </div>
+            <div class="input-group">
+                <label for="audioFormat">音频格式:</label>
+                <select id="audioFormat">
+                    <option value="mp3">MP3</option>
+                    <option value="m4a">M4A</option>
+                    <option value="wav">WAV</option>
+                    <option value="opus">OPUS</option>
+                </select>
+            </div>
+            <button onclick="downloadAudio()" id="audioDownloadBtn">开始下载音频</button>
+            <div id="audioProgress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="audioProgressFill">0%</div>
+                </div>
+                <div class="status-message info" id="audioStatus">准备中...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+
+        async function getVideoInfo() {
+            const url = document.getElementById('infoUrl').value;
+            const responseDiv = document.getElementById('infoResponse');
+            const dataEl = document.getElementById('infoData');
+
+            if (!url) {
+                alert('请输入视频 URL');
+                return;
+            }
+
+            try {
+                dataEl.textContent = '获取中...';
+                responseDiv.style.display = 'block';
+
+                const response = await fetch(`${API_BASE}/api/info?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || '请求失败');
+                }
+
+                dataEl.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                dataEl.textContent = `错误: ${error.message}`;
+            }
+        }
+
+        async function downloadVideo() {
+            const url = document.getElementById('videoUrl').value;
+            const formatId = document.getElementById('formatId').value;
+            const progressDiv = document.getElementById('videoProgress');
+            const progressFill = document.getElementById('videoProgressFill');
+            const statusEl = document.getElementById('videoStatus');
+            const btn = document.getElementById('videoDownloadBtn');
+
+            if (!url) {
+                alert('请输入视频 URL');
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                progressDiv.style.display = 'block';
+                progressFill.style.width = '0%';
+                progressFill.textContent = '0%';
+                statusEl.textContent = '创建下载任务...';
+                statusEl.className = 'status-message info';
+
+                const response = await fetch(`${API_BASE}/api/download/video`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url, formatId })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || '请求失败');
+                }
+
+                const downloadId = data.downloadId;
+                pollProgress(downloadId, 'video');
+            } catch (error) {
+                statusEl.textContent = `错误: ${error.message}`;
+                statusEl.className = 'status-message error';
+                btn.disabled = false;
+            }
+        }
+
+        async function downloadAudio() {
+            const url = document.getElementById('audioUrl').value;
+            const audioFormat = document.getElementById('audioFormat').value;
+            const progressDiv = document.getElementById('audioProgress');
+            const progressFill = document.getElementById('audioProgressFill');
+            const statusEl = document.getElementById('audioStatus');
+            const btn = document.getElementById('audioDownloadBtn');
+
+            if (!url) {
+                alert('请输入视频 URL');
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                progressDiv.style.display = 'block';
+                progressFill.style.width = '0%';
+                progressFill.textContent = '0%';
+                statusEl.textContent = '创建下载任务...';
+                statusEl.className = 'status-message info';
+
+                const response = await fetch(`${API_BASE}/api/download/audio`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url, audioFormat })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || '请求失败');
+                }
+
+                const downloadId = data.downloadId;
+                pollProgress(downloadId, 'audio');
+            } catch (error) {
+                statusEl.textContent = `错误: ${error.message}`;
+                statusEl.className = 'status-message error';
+                btn.disabled = false;
+            }
+        }
+
+        async function pollProgress(downloadId, type) {
+            const progressFill = document.getElementById(`${type}ProgressFill`);
+            const statusEl = document.getElementById(`${type}Status`);
+            const btn = document.getElementById(`${type}DownloadBtn`);
+
+            const interval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/api/progress/${downloadId}`);
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || '获取进度失败');
+                    }
+
+                    const percent = Math.round(data.progress) || 0;
+                    progressFill.style.width = `${percent}%`;
+                    progressFill.textContent = `${percent}%`;
+
+                    let statusText = data.message;
+                    if (data.speed) statusText += ` | 速度: ${data.speed}`;
+                    if (data.eta) statusText += ` | 剩余: ${data.eta}`;
+                    
+                    statusEl.textContent = statusText;
+
+                    if (data.status === 'completed') {
+                        clearInterval(interval);
+                        statusEl.textContent = `✅ 下载完成！文件: ${data.filename}`;
+                        statusEl.className = 'status-message success';
+                        btn.disabled = false;
+                    } else if (data.status === 'error') {
+                        clearInterval(interval);
+                        statusEl.textContent = `❌ 下载失败: ${data.message}`;
+                        statusEl.className = 'status-message error';
+                        btn.disabled = false;
+                    } else {
+                        statusEl.className = 'status-message info';
+                    }
+                } catch (error) {
+                    clearInterval(interval);
+                    statusEl.textContent = `❌ 错误: ${error.message}`;
+                    statusEl.className = 'status-message error';
+                    btn.disabled = false;
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
