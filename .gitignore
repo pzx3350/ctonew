@@ -21,3 +21,9 @@ yarn-error.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Node
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
