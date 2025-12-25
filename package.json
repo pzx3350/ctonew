@@ -1,0 +1,42 @@
+{
+  "name": "interactive-birthday-card",
+  "version": "1.0.0",
+  "description": "一个精美的互动生日贺卡网页应用，包含星空动画、烟花特效、音乐播放和 PDF OCR 功能",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8080 -c-1 --cors",
+    "dev": "http-server -p 8080 -c-1 --cors -o",
+    "serve": "http-server -p 8080 -c-1 --cors"
+  },
+  "keywords": [
+    "birthday-card",
+    "interactive",
+    "animation",
+    "canvas",
+    "pdf",
+    "ocr",
+    "tesseract",
+    "pdfjs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "pdfjs-dist": "^3.11.174",
+    "tesseract.js": "^5.0.4"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "url": ""
+  },
+  "homepage": ""
+}
