@@ -1,0 +1,26 @@
+{
+  "name": "pdf-ocr",
+  "version": "1.0.0",
+  "description": "PDF OCR 应用",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8080 -c-1 --cors",
+    "dev": "http-server -p 8080 -c-1 --cors -o",
+    "serve": "http-server -p 8080 -c-1 --cors"
+  },
+  "keywords": [
+    "pdf",
+    "ocr",
+    "tesseract",
+    "pdfjs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "pdfjs-dist": "^3.11.174",
+    "tesseract.js": "^5.0.4"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
