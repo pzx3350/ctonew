@@ -3,9 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF OCR</title>
+    <title>PDF OCR 文字提取工具</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Hello World</h1>
+    <div class="container">
+        <header class="header">
+            <h1>📄 PDF OCR 文字提取工具</h1>
+            <p class="subtitle">将PDF文档转换为可编辑文本，支持中文和英文识别</p>
+        </header>
+
+        <main class="main-content">
+            <!-- 上传区域 -->
+            <section class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p class="upload-text">拖拽PDF文件到此处，或<label for="fileInput" class="file-label">点击选择文件</label></p>
+                    <p class="upload-hint">支持 PDF 文件，最大50MB</p>
+                    <input type="file" id="fileInput" accept=".pdf" hidden>
+                </div>
+                <div class="file-info" id="fileInfo">
+                    <span class="file-name" id="fileName"></span>
+                    <button class="remove-file" id="removeFile" title="移除文件">×</button>
+                </div>
+            </section>
+
+            <!-- 语言选择 -->
+            <section class="language-section">
+                <label for="languageSelect">选择识别语言：</label>
+                <select id="languageSelect">
+                    <option value="auto">自动检测</option>
+                    <option value="chi_sim">简体中文</option>
+                    <option value="chi_tra">繁体中文</option>
+                    <option value="eng">英文</option>
+                    <option value="chi_sim+eng">简体中文+英文</option>
+                    <option value="chi_tra+eng">繁体中文+英文</option>
+                </select>
+            </section>
+
+            <!-- 操作按钮 -->
+            <section class="action-section">
+                <button class="btn btn-primary" id="startBtn" disabled>
+                    <span class="btn-text">开始识别</span>
+                    <span class="btn-loading" hidden>
+                        <span class="spinner"></span>
+                        处理中...
+                    </span>
+                </button>
+                <button class="btn btn-secondary" id="resetBtn">
+                    清空 / 重置
+                </button>
+            </section>
+
+            <!-- 进度区域 -->
+            <section class="progress-section" id="progressSection" hidden>
+                <div class="progress-header">
+                    <span class="progress-label">处理进度</span>
+                    <span class="progress-percentage" id="progressPercentage">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <p class="progress-status" id="progressStatus">准备中...</p>
+            </section>
+
+            <!-- 错误提示 -->
+            <section class="error-section" id="errorSection" hidden>
+                <div class="error-content">
+                    <span class="error-icon">⚠️</span>
+                    <span class="error-message" id="errorMessage"></span>
+                </div>
+                <button class="error-close" id="errorClose">×</button>
+            </section>
+
+            <!-- 结果预览区域 -->
+            <section class="result-section" id="resultSection" hidden>
+                <div class="result-header">
+                    <h2>识别结果预览</h2>
+                    <div class="result-actions">
+                        <span class="result-stats" id="resultStats"></span>
+                        <button class="btn btn-download" id="downloadBtn">
+                            📥 下载TXT文件
+                        </button>
+                    </div>
+                </div>
+                <textarea class="result-textarea" id="resultTextarea" readonly placeholder="识别结果将显示在这里..."></textarea>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2024 PDF OCR Tool - 基于 Tesseract.js + PDF.js</p>
+        </footer>
+    </div>
+
+    <!-- 引入必要的库 -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
