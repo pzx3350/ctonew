@@ -3,9 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF OCR</title>
+    <title>PDF OCR 文字提取工具</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- Tesseract.js -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
-    <h1>Hello World</h1>
+    <div class="container">
+        <header>
+            <h1>PDF OCR 文字提取</h1>
+            <p>基于浏览器本地处理，确保您的数据安全</p>
+        </header>
+
+        <main>
+            <section class="upload-section">
+                <div class="file-input-wrapper">
+                    <button class="btn btn-primary">选择 PDF 文件</button>
+                    <input type="file" id="pdf-upload" accept=".pdf" multiple>
+                </div>
+                <div id="file-list" class="file-list"></div>
+            </section>
+
+            <section class="controls-section">
+                <div class="control-group">
+                    <label for="language-select">识别语言：</label>
+                    <select id="language-select">
+                        <option value="chi_sim">简体中文</option>
+                        <option value="chi_tra">繁体中文</option>
+                        <option value="eng">英语</option>
+                        <option value="chi_sim+eng">中英混排</option>
+                    </select>
+                </div>
+                <button id="start-ocr" class="btn btn-success" disabled>开始提取文字</button>
+            </section>
+
+            <section id="progress-container" class="progress-section" style="display: none;">
+                <div class="progress-info">
+                    <span id="progress-status">准备中...</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div id="progress-bar" class="progress-bar-fill"></div>
+                </div>
+            </section>
+
+            <section id="result-section" class="result-section" style="display: none;">
+                <div class="result-header">
+                    <h2>提取结果预览</h2>
+                    <button id="download-txt" class="btn btn-secondary">下载 TXT 文件</button>
+                </div>
+                <textarea id="result-preview" readonly></textarea>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 PDF OCR 工具 - 纯本地处理</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
