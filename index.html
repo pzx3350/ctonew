@@ -3,44 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互动生日贺卡</title>
+    <title>PDF OCR Project</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <canvas id="starfield"></canvas>
-    <canvas id="fireworks"></canvas>
-    
-    <div id="giftContainer" class="gift-container">
-        <button id="giftButton" class="gift-button">
-            <span class="gift-icon">🎁</span>
-            <span class="gift-text">拆礼物</span>
-        </button>
-    </div>
-    
-    <div id="photoContainer" class="photo-container hidden">
-        <div class="photo-wrapper">
-            <img id="birthdayPhoto" src="" alt="生日照片">
-            <h1 class="birthday-text">生日快乐！</h1>
-        </div>
-    </div>
-    
-    <div id="uploadSection" class="upload-section">
-        <div class="upload-box">
-            <h2>设置生日贺卡</h2>
-            <div class="upload-group">
-                <label for="photoUpload">上传照片：</label>
-                <input type="file" id="photoUpload" accept="image/*">
-            </div>
-            <div class="upload-group">
-                <label for="musicUpload">上传音乐：</label>
-                <input type="file" id="musicUpload" accept="audio/*">
-            </div>
-            <button id="startButton" class="start-button">开始体验</button>
-        </div>
-    </div>
-    
-    <audio id="birthdayMusic" preload="auto"></audio>
-    
     <script src="script.js"></script>
 </body>
 </html>
