@@ -21,3 +21,8 @@ yarn-error.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Node
+node_modules/
+dist/
+.vite/

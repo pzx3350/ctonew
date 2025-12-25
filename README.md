@@ -39,8 +39,21 @@
 
 ## 使用方法
 
+### 0. 安装依赖（首次使用）
+如果需要使用 PDF OCR 功能或启动本地服务器，请先安装依赖：
+```bash
+npm install
+```
+
 ### 1. 打开应用
+**方式一：直接打开文件**  
 直接在浏览器中打开 `index.html` 文件。
+
+**方式二：使用本地服务器（推荐）**  
+```bash
+npm start
+```
+然后在浏览器中访问 `http://localhost:8080`
 
 ### 2. 设置贺卡
 - 点击"上传照片"按钮，选择一张生日照片
@@ -87,10 +100,12 @@
 
 ```
 .
-├── index.html      # 主HTML文件
-├── styles.css      # 样式表文件
-├── script.js       # JavaScript脚本文件
-└── README.md       # 说明文档
+├── package.json       # npm 配置与依赖（包含 PDF.js 与 Tesseract.js）
+├── package-lock.json  # 锁定依赖版本（npm install 生成）
+├── index.html         # 主HTML文件
+├── styles.css         # 样式表文件
+├── script.js          # JavaScript脚本文件
+└── README.md          # 说明文档
 ```
 
 ## 浏览器兼容性
@@ -128,9 +143,25 @@ const fireworkCount = 15; // 修改此数值
 <h1 class="birthday-text">生日快乐！</h1>
 ```
 
+## 依赖库
+
+### 核心依赖
+- **pdfjs-dist** (v3.11.174)：用于读取和处理 PDF 文件
+- **tesseract.js** (v5.0.4)：用于 OCR 文字识别
+
+### 开发工具
+- **http-server** (v14.1.1)：轻量级本地开发服务器
+
+### npm 命令
+- `npm install`：安装所有依赖
+- `npm start`：启动开发服务器（端口 8080）
+- `npm run dev`：启动开发服务器并自动打开浏览器
+- `npm run serve`：启动开发服务器（同 npm start）
+
 ## 开发者
 
-此项目使用纯原生 Web 技术开发，无需任何外部依赖库。
+此项目使用纯原生 Web 技术开发，基础功能无需任何外部依赖库。  
+PDF OCR 功能需要安装 `pdfjs-dist` 和 `tesseract.js` 依赖。
 
 ## 许可证
 
