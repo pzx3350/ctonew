@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF OCR 文字识别工具</title>
+    <link rel="stylesheet" href="pdf-ocr.css">
+</head>
+<body>
+    <!-- 背景星空动画 -->
+    <canvas id="starfield"></canvas>
+    
+    <!-- 主容器 -->
+    <div class="main-container">
+        <header class="header">
+            <h1 class="title">📄 PDF OCR 文字识别工具</h1>
+            <p class="subtitle">上传PDF文件，自动识别并提取文字内容</p>
+        </header>
+
+        <!-- 上传区域 -->
+        <div id="uploadArea" class="upload-area">
+            <div class="upload-content">
+                <div class="upload-icon">📤</div>
+                <h2>拖拽PDF文件到此处</h2>
+                <p>或者点击选择文件上传</p>
+                <input type="file" id="pdfFileInput" accept="application/pdf" hidden>
+                <button id="selectFileBtn" class="select-btn">选择PDF文件</button>
+                <p class="file-info">支持的格式：PDF | 最大文件大小：50MB</p>
+            </div>
+        </div>
+
+        <!-- 进度显示区域 -->
+        <div id="progressSection" class="progress-section hidden">
+            <div class="progress-card">
+                <h3>处理进度</h3>
+                <div class="progress-info">
+                    <span id="progressText">准备处理...</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <div class="page-info">
+                    <span id="pageInfo">第 0 / 0 页</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果显示区域 -->
+        <div id="resultSection" class="result-section hidden">
+            <div class="result-header">
+                <h3>识别结果</h3>
+                <div class="result-actions">
+                    <button id="copyTextBtn" class="action-btn">
+                        <span>📋</span>复制文本
+                    </button>
+                    <button id="downloadTxtBtn" class="action-btn primary">
+                        <span>💾</span>导出为TXT
+                    </button>
+                    <button id="resetBtn" class="action-btn">
+                        <span>🔄</span>重新上传
+                    </button>
+                </div>
+            </div>
+            <div class="result-stats">
+                <div class="stat-item">
+                    <span class="stat-label">总页数：</span>
+                    <span id="totalPages" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">识别字数：</span>
+                    <span id="totalChars" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">处理时间：</span>
+                    <span id="processTime" class="stat-value">0秒</span>
+                </div>
+            </div>
+            <div class="text-preview">
+                <textarea id="extractedText" placeholder="识别的文字将显示在这里..." readonly></textarea>
+            </div>
+        </div>
+
+        <!-- 帮助信息 -->
+        <div class="help-section">
+            <h4>💡 使用说明</h4>
+            <ul>
+                <li>支持识别中文、英文等多种语言</li>
+                <li>自动处理多页PDF文档</li>
+                <li>识别完成后可以复制或导出为TXT文件</li>
+                <li>处理时间取决于PDF页数和图片质量</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- CDN引入必要的库 -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+    <script src="pdf-ocr.js"></script>
+</body>
+</html>
