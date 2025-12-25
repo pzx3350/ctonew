@@ -3,9 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF OCR</title>
+    <title>PDF OCR 文字提取工具</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Hello World</h1>
+    <div class="container">
+        <h1>📄 PDF OCR 文字提取工具</h1>
+        
+        <div class="upload-section">
+            <label for="pdfFile" class="file-label">选择PDF文件：</label>
+            <input type="file" id="pdfFile" accept=".pdf" />
+            <span id="fileName" class="file-name"></span>
+        </div>
+        
+        <div class="language-section">
+            <label for="language">选择识别语言：</label>
+            <select id="language">
+                <option value="chi_sim">简体中文</option>
+                <option value="chi_tra">繁体中文</option>
+                <option value="eng">英文</option>
+                <option value="chi_sim+chi_tra+eng">全部语言</option>
+            </select>
+        </div>
+        
+        <button id="processBtn" class="btn-primary">开始提取文字</button>
+        
+        <div id="progressSection" class="progress-section" style="display:none;">
+            <div class="progress-bar">
+                <div id="progress" class="progress-fill"></div>
+            </div>
+            <p id="progressText" class="progress-text">处理中: 0%</p>
+        </div>
+        
+        <div id="resultSection" class="result-section" style="display:none;">
+            <h3>提取结果：</h3>
+            <textarea id="resultText" readonly></textarea>
+            <div class="button-group">
+                <button id="downloadBtn" class="btn-download">下载TXT文件</button>
+                <button id="copyBtn" class="btn-copy">复制文字</button>
+                <button id="clearBtn" class="btn-clear">清空</button>
+            </div>
+        </div>
+        
+        <div id="errorSection" class="error-section" style="display:none;">
+            <p id="errorMsg"></p>
+        </div>
+        
+        <div class="info-section">
+            <h3>使用说明</h3>
+            <ul>
+                <li>点击"选择PDF文件"按钮上传PDF文档</li>
+                <li>选择识别语言（默认为简体中文）</li>
+                <li>点击"开始提取文字"按钮开始OCR识别</li>
+                <li>识别完成后可查看结果、复制或下载TXT文件</li>
+                <li>支持批量处理多页PDF文档</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // 设置PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
