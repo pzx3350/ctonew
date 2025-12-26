@@ -49,8 +49,7 @@ def init_ocr_engine():
         # 支持ch（中文）、en（英文）、chinese_cht（繁体中文）
         ocr_engine = PaddleOCR(
             use_angle_cls=True,
-            lang='ch',  # 使用中文模型，可以识别简体和繁体
-            show_log=False
+            lang='ch'  # 使用中文模型，可以识别简体和繁体
         )
         logger.info("PaddleOCR引擎初始化成功")
     except Exception as e:

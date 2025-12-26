@@ -40,7 +40,7 @@ def check_ocr_model():
     try:
         logger.info("正在检查PaddleOCR模型...")
         # 尝试初始化OCR引擎，如果模型不存在会自动下载
-        ocr = PaddleOCR(use_angle_cls=True, lang='ch', show_log=False)
+        ocr = PaddleOCR(use_angle_cls=True, lang='ch')
         logger.info("✓ PaddleOCR模型准备完成")
         return True
     except Exception as e:
